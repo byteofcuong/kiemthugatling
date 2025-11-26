@@ -1,0 +1,8 @@
+{
+  "name": "#{petName}",
+  "birthDate": "#{birthDate}",
+  "type": {
+    "id": 1,
+    "name": "cat"
+  }
+}
