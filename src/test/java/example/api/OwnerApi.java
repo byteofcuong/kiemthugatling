@@ -7,8 +7,8 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 public class OwnerApi {
 
     public static ChainBuilder create = exec(
-            http("Create Owner") // Tên trên báo cáo
-                    .post("/owners") // Endpoint (Gatling tự nối với BaseUrl)
+            http("Create Owner")
+                    .post("/owners") // Endpoint
                     .body(ElFileBody("bodies/owner.json")).asJson() // Dùng file JSON mẫu
                     .check(status().is(201)) // Check trả về 201 Created
                     .check(jsonPath("$.id").saveAs("ownerId")) // Lưu ID dùng cho bước sau

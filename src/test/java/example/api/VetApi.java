@@ -7,7 +7,7 @@ import static io.gatling.javaapi.http.HttpDsl.*;
 public class VetApi {
     public static ChainBuilder list = exec(
             http("List Vets")
-                    .get("/vets") //
+                    .get("/vets")
                     .check(status().is(200))
     );
 }
