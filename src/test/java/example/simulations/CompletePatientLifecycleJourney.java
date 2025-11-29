@@ -112,7 +112,7 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
         
         // ==================== PHASE 4: CHUYỂN NHƯỢNG PET ====================
         .exec(session -> {
-            System.out.println("🔵 [PHASE 4] Chuyển pet cho owner mới");
+            System.out.println(" [PHASE 4] Chuyển pet cho owner mới");
             return session;
         })
         
