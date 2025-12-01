@@ -3,7 +3,8 @@ package example.simulations;
 import static io.gatling.javaapi.core.CoreDsl.*;
 
 import example.BaseSimulation;
-import example.scenarios.*;
+import example.api.*;
+import example.config.Feeders;
 import io.gatling.javaapi.core.*;
 
 /**
@@ -38,6 +39,7 @@ import io.gatling.javaapi.core.*;
 public class CompletePatientLifecycleJourney extends BaseSimulation {
 
     ScenarioBuilder lifecycleJourney = scenario("Complete Patient Lifecycle Journey")
+        .feed(Feeders.users)
         
         // ==================== MỞ BÀI: INIT ====================
         .exec(session -> {
@@ -46,11 +48,11 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
         })
         
         // Phase 0: Tìm hiểu hệ thống
-        .exec(VetScenario.getAllVets)
+        .exec(VetApi.getAllVets)
         .pause(2, 3)
-        .exec(VetScenario.getAllSpecialties)
+        .exec(VetApi.getAllSpecialties)
         .pause(1, 2)
-        .exec(PetScenario.getAllPetTypes)
+        .exec(PetApi.getAllPetTypes)
         .pause(1, 2)
         
         // ==================== PHASE 1: ĐĂNG KÝ VÀ KHÁM LẦN ĐẦU ====================
@@ -59,17 +61,17 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
             return session;
         })
         
-        .exec(OwnerScenario.createOwner)
+        .exec(OwnerApi.createOwner)
         .pause(2, 3)
-        .exec(OwnerScenario.getOwnerById)
+        .exec(OwnerApi.getOwnerById)
         .pause(1, 2)
-        .exec(PetScenario.createPetForOwner)
+        .exec(PetApi.createPetForOwner)
         .pause(2, 3)
-        .exec(PetScenario.getPetById)
+        .exec(PetApi.getPetById)
         .pause(1, 2)
-        .exec(VisitScenario.createVisitForPet)
+        .exec(VisitApi.createVisitForPet)
         .pause(2, 3)
-        .exec(VisitScenario.getVisitById)
+        .exec(VisitApi.getVisitById)
         .pause(1, 2)
         
         // ==================== PHASE 2: TÁI KHÁM VÀ CẬP NHẬT ====================
@@ -79,13 +81,13 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
         })
         
         // Sau 1 tuần, cập nhật thông tin pet (cân nặng thay đổi)
-        .exec(PetScenario.updatePet)
+        .exec(PetApi.updatePet)
         .pause(2, 3)
-        .exec(PetScenario.getPetById)
+        .exec(PetApi.getPetById)
         .pause(1, 2)
         
         // Đặt lịch tái khám
-        .exec(VisitScenario.createVisitForPet)
+        .exec(VisitApi.createVisitForPet)
         .pause(2, 3)
         .exec(session -> session.set("secondVisitId", session.get("visitId")))
         
@@ -96,18 +98,18 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
         })
         
         // Xem tất cả lịch hẹn
-        .exec(VisitScenario.getAllVisits)
+        .exec(VisitApi.getAllVisits)
         .pause(2, 4)
         
         // Đổi lịch hẹn thứ 2
         .exec(session -> session.set("visitId", session.get("secondVisitId")))
-        .exec(VisitScenario.updateVisit)
+        .exec(VisitApi.updateVisit)
         .pause(2, 3)
         
         // Cập nhật thông tin owner (đổi địa chỉ)
-        .exec(OwnerScenario.updateOwner)
+        .exec(OwnerApi.updateOwner)
         .pause(2, 3)
-        .exec(OwnerScenario.getOwnerById)
+        .exec(OwnerApi.getOwnerById)
         .pause(1, 2)
         
         // ==================== PHASE 4: CHUYỂN NHƯỢNG PET ====================
@@ -117,16 +119,16 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
         })
         
         // Tạo owner mới (người nhận pet)
-        .exec(OwnerScenario.createOwner)
+        .exec(OwnerApi.createOwner)
         .pause(2, 3)
         .exec(session -> session.set("newOwnerId", session.get("ownerId")))
         
         // Cập nhật pet để chuyển sang owner mới
-        .exec(PetScenario.updatePet)
+        .exec(PetApi.updatePet)
         .pause(2, 3)
         
         // Xác nhận pet đã chuyển owner
-        .exec(PetScenario.getPetById)
+        .exec(PetApi.getPetById)
         .pause(1, 2)
         
         // ==================== PHASE 5: DỌN DẸP DỮ LIỆU ====================
@@ -136,20 +138,20 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
         })
         
         // Xóa visit
-        .exec(VisitScenario.deleteVisit)
+        .exec(VisitApi.deleteVisit)
         .pause(1)
         
         // Xóa pet
-        .exec(PetScenario.deletePet)
+        .exec(PetApi.deletePet)
         .pause(1)
         
         // Xóa owner cũ
-        .exec(OwnerScenario.deleteOwner)
+        .exec(OwnerApi.deleteOwner)
         .pause(1)
         
         // Xóa owner mới
         .exec(session -> session.set("ownerId", session.get("newOwnerId")))
-        .exec(OwnerScenario.deleteOwner)
+        .exec(OwnerApi.deleteOwner)
         .pause(1)
         
         // ==================== KẾT BÀI: TEARDOWN ====================
@@ -159,9 +161,9 @@ public class CompletePatientLifecycleJourney extends BaseSimulation {
         })
         
         // Xem lại danh sách để đảm bảo đã xóa
-        .exec(OwnerScenario.getAllOwners)
+        .exec(OwnerApi.getAllOwners)
         .pause(1, 2)
-        .exec(VisitScenario.getAllVisits)
+        .exec(VisitApi.getAllVisits)
         .pause(1, 2)
         
         .exec(session -> {
