@@ -9,27 +9,35 @@ import static io.gatling.javaapi.core.CoreDsl.*;
 public class ClinicalLoadTest extends Simulation {
     {
         setUp(
-                // --- NHÓM NGƯỜI DÙNG CHÍNH (80% Traffic) ---
+                // --- NHÓM NGƯỜI DÙNG CHÍNH (70% Traffic) ---
                 // Khám thường & Đăng ký mới
                 ClinicalFlows.newPatientRegistration.injectOpen(
                         rampUsers(10).during(30),           // Warm up
-                        constantUsersPerSec(2).during(300)  // Chạy ổn định 5 phút
+                        constantUsersPerSec(1.5).during(300)  // Chạy ổn định 5 phút
                 ),
 
-                // --- NHÓM NGƯỜI DÙNG PHỤ (15% Traffic) ---
+                // --- NHÓM NGƯỜI DÙNG CÓ NHIỀU PET (20% Traffic) ---
+                // Mô phỏng gia đình nuôi nhiều thú cưng
+                ClinicalFlows.multiPetOwnerJourney.injectOpen(
+                        nothingFor(30),                     // Bắt đầu sau warm up
+                        rampUsers(5).during(30),            // Warm up cho multi-pet
+                        constantUsersPerSec(0.5).during(270) // Chạy ổn định
+                ),
+
+                // --- NHÓM NGƯỜI DÙNG PHỤ (8% Traffic) ---
                 // Tìm kiếm, Đổi lịch
                 ClinicalFlows.searchOwner.injectOpen(
-                        constantUsersPerSec(1).during(300)
-                ),
-                ClinicalFlows.rescheduleVisit.injectOpen(
                         constantUsersPerSec(0.5).during(300)
                 ),
+                ClinicalFlows.rescheduleVisit.injectOpen(
+                        constantUsersPerSec(0.3).during(300)
+                ),
 
-                // --- NHÓM ĐỘT BIẾN (5% Traffic) ---
+                // --- NHÓM ĐỘT BIẾN (2% Traffic) ---
                 // Cấp cứu & Admin
                 ClinicalFlows.emergencyVisit.injectOpen(
                         nothingFor(20),                     // Vào sau 20s
-                        rampUsers(5).during(300)
+                        rampUsers(3).during(300)
                 ),
                 AdminFlows.onboardVet.injectOpen(
                         nothingFor(10),
