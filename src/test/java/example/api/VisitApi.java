@@ -1,29 +1,17 @@
-package example.scenarios;
+package example.api;
 
 import static io.gatling.javaapi.core.CoreDsl.*;
 import static io.gatling.javaapi.http.HttpDsl.*;
 
-import example.Constants;
+import example.config.Constants;
 import io.gatling.javaapi.core.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-/**
- * Visit Management Scenarios
- * Covers CRUD operations for Visit entities
- * 
- * API Endpoints tested:
- * - POST   /api/owners/{ownerId}/pets/{petId}/visits  (Create visit for pet)
- * - GET    /api/visits                                (List all visits)
- * - GET    /api/visits/{id}                           (Get visit by ID)
- * - PUT    /api/visits/{id}                           (Update visit)
- * - DELETE /api/visits/{id}                           (Delete visit)
- */
-public class VisitScenario {
+public class VisitApi {
 
     /**
-     * Scenario 18: Create visit for pet (Most critical workflow)
-     * Requires existing owner and pet
+     * TẠO LỊCH KHÁM CHO THÚ CƯNG
      */
     public static ChainBuilder createVisitForPet = 
         exec(session -> {
@@ -45,7 +33,7 @@ public class VisitScenario {
         );
 
     /**
-     * Scenario 19: Get all visits
+     * LẤY DANH SÁCH TẤT CẢ LỊCH KHÁM
      */
     public static ChainBuilder getAllVisits = 
         exec(
@@ -56,7 +44,7 @@ public class VisitScenario {
         );
 
     /**
-     * Scenario 20: Update visit
+     * CẬP NHẬT LỊCH KHÁM
      */
     public static ChainBuilder updateVisit = 
         exec(session -> {
@@ -79,7 +67,7 @@ public class VisitScenario {
         );
 
     /**
-     * Scenario 21: Delete visit
+     * XÓA LỊCH KHÁM
      */
     public static ChainBuilder deleteVisit = 
         exec(
@@ -89,7 +77,7 @@ public class VisitScenario {
         );
 
     /**
-     * Get visit by ID
+     * LẤY THÔNG TIN LỊCH KHÁM THEO ID
      */
     public static ChainBuilder getVisitById = 
         exec(
@@ -101,7 +89,7 @@ public class VisitScenario {
         );
 
     /**
-     * Create visit with specific description
+     * TẠO LỊCH KHÁM KHẨN CẤP
      */
     public static ChainBuilder createEmergencyVisit = 
         exec(session -> {
@@ -120,7 +108,7 @@ public class VisitScenario {
         );
 
     /**
-     * Create routine checkup visit
+     * TẠO LỊCH KHÁM ĐỊNH KỲ
      */
     public static ChainBuilder createRoutineCheckup = 
         exec(session -> {
@@ -139,27 +127,4 @@ public class VisitScenario {
                 .check(status().is(201))
                 .check(jsonPath("$.id").saveAs(Constants.VISIT_ID))
         );
-
-    /**
-     * Full Visit CRUD workflow
-     */
-    public static ChainBuilder fullVisitCRUD = 
-        exec(createVisitForPet)
-        .pause(1)
-        .exec(getVisitById)
-        .pause(1)
-        .exec(updateVisit)
-        .pause(1)
-        .exec(deleteVisit);
-
-    /**
-     * Complete clinical workflow: Owner → Pet → Visit
-     * Requires executing owner and pet creation first
-     */
-    public static ChainBuilder completeClinicalWorkflow = 
-        exec(createVisitForPet)
-        .pause(2)
-        .exec(getAllVisits)
-        .pause(1)
-        .exec(getVisitById);
 }
