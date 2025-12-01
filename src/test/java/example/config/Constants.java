@@ -1,4 +1,4 @@
-package example;
+package example.config;
 
 public class Constants {
     

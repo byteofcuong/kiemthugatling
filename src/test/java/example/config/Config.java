@@ -7,7 +7,7 @@ public class Config {
     public static int USERS = Integer.getInteger("users", 10);
 
     public static HttpProtocolBuilder httpProtocol = http
-            .baseUrl("http://localhost:9966/petclinic/api")
+            .baseUrl("http://localhost:9966/petclinic")
 
             .acceptHeader("application/json")
             .contentTypeHeader("application/json")
