@@ -15,19 +15,11 @@ public class ClinicalFlows {
      */
     public static ScenarioBuilder newPatientRegistration = scenario("New Patient Registration")
             .feed(Feeders.users)
-            .exec(session -> {
-                System.out.println("LOG 1 [ClinicalFlows]: firstName = " + session.getString("firstName"));
-                return session;
-            })
             .exec(VetApi.getAllVets)
             .exec(VetApi.getAllSpecialties)
             .exec(PetApi.getAllPetTypes)
             .pause(2)
             .exec(OwnerApi.createOwner)
-            .exec(session -> {
-                System.out.println("LOG 1 [ClinicalFlows]: firstName = " + session.getString("firstName"));
-                return session;
-            })
             .pause(1)
             .exec(OwnerApi.getOwnerById)
             .exec(PetApi.createPetForOwner)
@@ -157,10 +149,6 @@ public class ClinicalFlows {
             .feed(Feeders.users)
             
             // Phase 1: Tạo owner mới
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Creating owner: " + session.getString("firstName"));
-                return session;
-            })
             .exec(OwnerApi.createOwner)
             .pause(1, 2)
             
@@ -169,43 +157,29 @@ public class ClinicalFlows {
             .pause(1)
             
             // Phase 3: Đăng ký pet thứ nhất (sử dụng data từ CSV)
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Registering pet 1 for owner " + session.get("ownerId"));
-                return session;
-            })
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet1Id", session.get("petId")))
             .pause(1)
             
             // Phase 4: Đăng ký pet thứ hai (override petName và typeId)
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Registering pet 2 for owner " + session.get("ownerId"));
-                return session
-                        .set("petName", session.getString("petName") + "2")
-                        .set("typeId", 1)
-                        .set("typeName", "cat");
-            })
+            .exec(session -> session
+                    .set("petName", session.getString("petName") + "2")
+                    .set("typeId", 1)
+                    .set("typeName", "cat"))
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet2Id", session.get("petId")))
             .pause(1)
             
             // Phase 5: Đăng ký pet thứ ba
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Registering pet 3 for owner " + session.get("ownerId"));
-                return session
-                        .set("petName", session.getString("firstName") + "Bird")
-                        .set("typeId", 5)
-                        .set("typeName", "bird");
-            })
+            .exec(session -> session
+                    .set("petName", session.getString("firstName") + "Bird")
+                    .set("typeId", 5)
+                    .set("typeName", "bird"))
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet3Id", session.get("petId")))
             .pause(2, 3)
             
             // Phase 6: Xem thông tin owner với tất cả pets (kiểm tra performance khi load nhiều pets)
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Retrieving owner with all pets");
-                return session;
-            })
             .exec(OwnerApi.getOwnerById)
             .pause(1, 2)
             
@@ -214,44 +188,27 @@ public class ClinicalFlows {
             .pause(1)
             
             // Phase 8: Đặt lịch khám cho pet 1
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Scheduling visit for pet 1");
-                return session.set("petId", session.get("pet1Id"));
-            })
+            .exec(session -> session.set("petId", session.get("pet1Id")))
             .exec(VisitApi.createVisitForPet)
             .exec(session -> session.set("visit1Id", session.get("visitId")))
             .pause(1)
             
             // Phase 9: Đặt lịch khám cho pet 2
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Scheduling visit for pet 2");
-                return session.set("petId", session.get("pet2Id"));
-            })
+            .exec(session -> session.set("petId", session.get("pet2Id")))
             .exec(VisitApi.createVisitForPet)
             .exec(session -> session.set("visit2Id", session.get("visitId")))
             .pause(1)
             
             // Phase 10: Đặt lịch khám cho pet 3
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Scheduling visit for pet 3");
-                return session.set("petId", session.get("pet3Id"));
-            })
+            .exec(session -> session.set("petId", session.get("pet3Id")))
             .exec(VisitApi.createVisitForPet)
             .exec(session -> session.set("visit3Id", session.get("visitId")))
             .pause(2, 3)
             
             // Phase 11: Xem tất cả lịch hẹn (kiểm tra query performance)
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Retrieving all visits for verification");
-                return session;
-            })
             .exec(VisitApi.getAllVisits)
             .pause(1, 2)
             
             // Phase 12: Xem lại thông tin owner để xác nhận tất cả pets và visits
-            .exec(session -> {
-                System.out.println("[Multi-Pet Journey] Final verification of owner data");
-                return session;
-            })
             .exec(OwnerApi.getOwnerById);
 }
