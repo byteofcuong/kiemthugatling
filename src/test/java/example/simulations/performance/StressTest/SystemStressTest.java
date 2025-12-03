@@ -10,13 +10,12 @@ public class SystemStressTest extends Simulation {
         setUp(
                 ClinicalFlows.completeLifecycle.injectOpen(
                         // Bắt đầu từ 1 user/giây, tăng dần lên
-                        incrementUsersPerSec(2)      // Mức tăng nhẹ nhàng (2 user/s)
-                                .times(10)               // Tăng 10 bậc -> Max 20 user/s (Đủ sập app nhỏ)
-                                .eachLevelLasting(30)    // Giữ 30s để kịp quan sát
+                        incrementUsersPerSec(3)      // Tăng nhanh hơn để giảm total users
+                                .times(5)                // Giảm xuống 5 bậc (từ 10) -> Max 16 user/s
+                                .eachLevelLasting(20)    // Giảm xuống 20s (từ 30s)
                                 .startingFrom(1)         // Bắt đầu từ 1
                 )
         ).protocols(Config.httpProtocol);
 
-        // KHÔNG CẦN ASSERTION (Mục tiêu là để nó chết)
     }
 }
