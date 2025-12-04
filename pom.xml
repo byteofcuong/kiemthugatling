@@ -65,6 +65,12 @@
           </executions>
         <configuration>
           <!-- Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://docs.gatling.io/reference/integrations/build-tools/maven-plugin/#running-your-simulations-on-gatling-enterprise-cloud -->
+          <!-- Giới hạn CPU -->
+          <jvmArgs>
+            <jvmArg>-Xms512m</jvmArg>
+            <jvmArg>-Xmx2g</jvmArg>
+            <jvmArg>-XX:ActiveProcessorCount=3</jvmArg>
+          </jvmArgs>
         </configuration>
       </plugin>
     </plugins>

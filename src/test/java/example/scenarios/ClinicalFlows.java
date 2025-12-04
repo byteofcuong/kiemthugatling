@@ -63,9 +63,13 @@ public class ClinicalFlows {
     public static ScenarioBuilder emergencyVisit = scenario("Emergency Visit")
             .feed(Feeders.users)
             .exec(VetApi.getAllVets)
-            .exec(OwnerApi.createOwner)
-            .exec(PetApi.createPetForOwner)
-            .exec(VisitApi.createEmergencyVisit)
+            .pause(1)
+            .exec(OwnerApi.createOwner)  // createOwner sẽ tự động lưu ownerId
+            .pause(1)
+            .exec(OwnerApi.getOwnerById)
+            .exec(PetApi.createPetForOwner)  // createPetForOwner sẽ tự động lưu petId
+            .pause(1)
+            .exec(VisitApi.createEmergencyVisit)  // Sử dụng ownerId và petId đã được lưu
             .exec(VisitApi.getVisitById);
 
     /**
@@ -110,16 +114,24 @@ public class ClinicalFlows {
      * QUY TRÌNH TOÀN DIỆN CỦA BỆNH NHÂN
      */
     public static ScenarioBuilder completeLifecycle = scenario("Complete Patient Lifecycle")
+            .pace(5)  // Đảm bảo mỗi user chờ ít nhất 5 giây giữa các iteration
             .feed(Feeders.users)
             .exec(OwnerApi.createOwner)
+            .pause(1, 2)  // Chờ ngẫu nhiên 1-2 giây (giống người dùng thật)
             .exec(PetApi.createPetForOwner)
+            .pause(1, 2)
             .exec(VisitApi.createVisitForPet)
-            .pause(2)
+            .pause(2, 3)
             .exec(PetApi.updatePet)
+            .pause(1, 2)
             .exec(VisitApi.updateVisit)
+            .pause(1, 2)
             .exec(OwnerApi.updateOwner)
+            .pause(1, 2)
             .exec(VisitApi.deleteVisit)
+            .pause(1)
             .exec(PetApi.deletePet)
+            .pause(1)
             .exec(OwnerApi.deleteOwner);
 
     /**

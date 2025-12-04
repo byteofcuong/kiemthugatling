@@ -11,5 +11,9 @@ public class Config {
 
             .acceptHeader("application/json")
             .contentTypeHeader("application/json")
-            .userAgentHeader("Gatling Performance Test");
+            .userAgentHeader("Gatling Performance Test")
+            
+            // Connection pooling
+            .maxConnectionsPerHost(10)
+            .shareConnections();
 }
