@@ -12,7 +12,7 @@ public class PetApi {
      */
     public static ChainBuilder createPetForOwner =
             exec(
-                    http("Create Pet for Owner #{" + Constants.OWNER_ID + "}")
+                    http("Create Pet for Owner")
                             .post(Constants.OWNERS_API + "/#{" + Constants.OWNER_ID + "}/pets")
                             .body(StringBody("{" +
                                     "\"name\": \"#{petName}\"," +        // <--- SỬA THÀNH petName
@@ -32,7 +32,7 @@ public class PetApi {
      */
     public static ChainBuilder getPetById =
             exec(
-                    http("Get Pet by ID: #{" + Constants.PET_ID + "}")
+                    http("Get Pet by ID")
                             .get(Constants.PETS_API + "/#{" + Constants.PET_ID + "}")
                             .check(status().is(200))
                             .check(jsonPath("$.id").exists())
@@ -43,7 +43,7 @@ public class PetApi {
      */
     public static ChainBuilder updatePet =
             exec(
-                    http("Update Pet #{" + Constants.PET_ID + "}")
+                    http("Update Pet")
                             .put(Constants.PETS_API + "/#{" + Constants.PET_ID + "}")
                             .body(StringBody("{" +
                                     "\"id\": #{" + Constants.PET_ID + "}," +
@@ -62,7 +62,7 @@ public class PetApi {
      */
     public static ChainBuilder deletePet =
             exec(
-                    http("Delete Pet #{" + Constants.PET_ID + "}")
+                    http("Delete Pet")
                             .delete(Constants.PETS_API + "/#{" + Constants.PET_ID + "}")
                             .check(status().is(204))
             );

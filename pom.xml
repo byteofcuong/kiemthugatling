@@ -64,7 +64,9 @@
               </execution>
           </executions>
         <configuration>
-          <!-- Enterprise Cloud (https://cloud.gatling.io/) configuration reference: https://docs.gatling.io/reference/integrations/build-tools/maven-plugin/#running-your-simulations-on-gatling-enterprise-cloud -->
+            <excludes>
+                <exclude>example.recorder_scenarios.*</exclude>
+            </excludes>
           <!-- Giới hạn CPU -->
           <jvmArgs>
             <jvmArg>-Xms512m</jvmArg>

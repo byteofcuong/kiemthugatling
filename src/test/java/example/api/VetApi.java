@@ -38,7 +38,7 @@ public class VetApi {
      */
     public static ChainBuilder assignSpecialtyToVet =
             exec(
-                    http("Assign Specialty to Vet #{" + Constants.VET_ID + "}")
+                    http("Assign Specialty to Vet")
                             .put(Constants.VETS_API + "/#{" + Constants.VET_ID + "}")
                             .body(StringBody("{" +
                                     "\"id\": #{" + Constants.VET_ID + "}," +
@@ -57,7 +57,7 @@ public class VetApi {
      */
     public static ChainBuilder updateVet =
             exec(
-                    http("Update Vet #{" + Constants.VET_ID + "}")
+                    http("Update Vet")
                             .put(Constants.VETS_API + "/#{" + Constants.VET_ID + "}")
                             .body(StringBody("{" +
                                     "\"id\": #{" + Constants.VET_ID + "}," +
@@ -73,7 +73,7 @@ public class VetApi {
      */
     public static ChainBuilder deleteVet =
             exec(
-                    http("Delete Vet #{" + Constants.VET_ID + "}")
+                    http("Delete Vet")
                             .delete(Constants.VETS_API + "/#{" + Constants.VET_ID + "}")
                             .check(status().is(204))
             );

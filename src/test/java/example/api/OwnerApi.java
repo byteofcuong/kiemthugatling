@@ -42,7 +42,7 @@ public class OwnerApi {
      */
     public static ChainBuilder getOwnerById =
             exec(
-                    http("Get Owner by ID: #{" + Constants.OWNER_ID + "}")
+                    http("Get Owner by ID")
                             .get(Constants.OWNERS_API + "/#{" + Constants.OWNER_ID + "}")
                             .check(status().is(200))
                             .check(jsonPath("$.id").exists())
@@ -54,7 +54,7 @@ public class OwnerApi {
      */
     public static ChainBuilder updateOwner =
             exec(
-                    http("Update Owner #{" + Constants.OWNER_ID + "}")
+                    http("Update Owner")
                             .put(Constants.OWNERS_API + "/#{" + Constants.OWNER_ID + "}")
                             .body(StringBody("{" +
                                     "\"id\": #{" + Constants.OWNER_ID + "}," +
@@ -72,7 +72,7 @@ public class OwnerApi {
      */
     public static ChainBuilder deleteOwner =
             exec(
-                    http("Delete Owner #{" + Constants.OWNER_ID + "}")
+                    http("Delete Owner")
                             .delete(Constants.OWNERS_API + "/#{" + Constants.OWNER_ID + "}")
                             .check(status().is(204))
             );
@@ -100,7 +100,7 @@ public class OwnerApi {
      */
     public static ChainBuilder searchOwnerByLastName =
             exec(
-                    http("Search Owner by Last Name: #{lastName}")
+                    http("Search Owner by Last Name")
                             .get(Constants.OWNERS_API)
                             .queryParam("lastName", "#{lastName}")
                             .check(status().is(200))

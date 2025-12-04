@@ -22,7 +22,7 @@ public class VisitApi {
             return session.set("visitDate", visitDate);
         })
         .exec(
-            http("Create Visit for Pet #{" + Constants.PET_ID + "}")
+            http("Create Visit for Pet")
                 .post("/api/owners/#{" + Constants.OWNER_ID + "}/pets/#{" + Constants.PET_ID + "}/visits")
                 .body(StringBody("{" +
                     "\"date\": \"#{visitDate}\"," +
@@ -55,7 +55,7 @@ public class VisitApi {
             return session.set("updatedVisitDate", updatedDate);
         })
         .exec(
-            http("Update Visit #{" + Constants.VISIT_ID + "}")
+            http("Update Visit")
                 .put(Constants.VISITS_API + "/#{" + Constants.VISIT_ID + "}")
                 .body(StringBody("{" +
                     "\"id\": #{" + Constants.VISIT_ID + "}," +
@@ -71,7 +71,7 @@ public class VisitApi {
      */
     public static ChainBuilder deleteVisit = 
         exec(
-            http("Delete Visit #{" + Constants.VISIT_ID + "}")
+            http("Delete Visit")
                 .delete(Constants.VISITS_API + "/#{" + Constants.VISIT_ID + "}")
                 .check(status().is(204))
         );
@@ -81,7 +81,7 @@ public class VisitApi {
      */
     public static ChainBuilder getVisitById = 
         exec(
-            http("Get Visit by ID: #{" + Constants.VISIT_ID + "}")
+            http("Get Visit by ID")
                 .get(Constants.VISITS_API + "/#{" + Constants.VISIT_ID + "}")
                 .check(status().is(200))
                 .check(jsonPath("$.id").exists())

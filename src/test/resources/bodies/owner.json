@@ -1,7 +1,0 @@
-{
-  "firstName": "#{firstName}",
-  "lastName": "#{lastName}",
-  "address": "123 Performance St",
-  "city": "Hanoi",
-  "telephone": "#{telephone}"
-}
