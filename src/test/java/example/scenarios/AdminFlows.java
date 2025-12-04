@@ -44,5 +44,7 @@ public class AdminFlows {
             .exec(VetApi.updateSpecialty)
             .pause(1)
             .exec(VetApi.createVet)
-            .exec(VetApi.assignSpecialtyToVet);
+            .exec(VetApi.assignSpecialtyToVet)
+            .pause(1)
+            .exec(VetApi.getAllVets);
 }

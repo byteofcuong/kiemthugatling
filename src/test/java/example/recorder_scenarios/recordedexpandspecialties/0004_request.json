@@ -1,0 +1,11 @@
+{
+  "id": 21,
+  "firstName": "Strange",
+  "lastName": "Doctor",
+  "specialties": [
+    {
+      "id": 9,
+      "name": "CardiologyHeartCenter"
+    }
+  ]
+}

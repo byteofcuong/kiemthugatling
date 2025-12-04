@@ -1,0 +1,5 @@
+{
+  "name": "Kitty",
+  "birthDate": "2021-01-01",
+  "type": { "id": 1, "name": "cat" }
+}

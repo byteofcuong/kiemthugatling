@@ -15,19 +15,11 @@ public class ClinicalFlows {
      */
     public static ScenarioBuilder newPatientRegistration = scenario("New Patient Registration")
             .feed(Feeders.users)
-            .exec(session -> {
-                System.out.println("LOG 1 [ClinicalFlows]: firstName = " + session.getString("firstName"));
-                return session;
-            })
             .exec(VetApi.getAllVets)
             .exec(VetApi.getAllSpecialties)
             .exec(PetApi.getAllPetTypes)
             .pause(2)
             .exec(OwnerApi.createOwner)
-            .exec(session -> {
-                System.out.println("LOG 1 [ClinicalFlows]: firstName = " + session.getString("firstName"));
-                return session;
-            })
             .pause(1)
             .exec(OwnerApi.getOwnerById)
             .exec(PetApi.createPetForOwner)
@@ -61,6 +53,7 @@ public class ClinicalFlows {
             .pause(1)
             .exec(VisitApi.getAllVisits)
             .exec(VisitApi.getVisitById)
+            .exec(VetApi.getAllVets)
             .pause(2)
             .exec(VisitApi.updateVisit)
             .exec(VisitApi.getVisitById);
@@ -98,8 +91,6 @@ public class ClinicalFlows {
             // Pet 1 (Dùng data từ CSV)
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet1Id", session.get("petId")))
-            // Pet 2 (Vẫn dùng data cũ hoặc logic API tự xử lý nếu muốn khác biệt,
-            // nhưng ở đây ta chấp nhận tạo nhiều con giống nhau cho 1 chủ để test tải)
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet2Id", session.get("petId")))
             // Pet 3

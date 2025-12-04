@@ -45,8 +45,8 @@ public class VetApi {
                                     "\"firstName\": \"#{firstName}\"," +
                                     "\"lastName\": \"#{lastName}\"," +
                                     "\"specialties\": [{" +
-                                    "\"id\": #{specialtyIds}," +    // <--- Dùng biến CSV
-                                    "\"name\": \"#{specialtyName}\"" + // <--- Dùng biến CSV
+                                    "\"id\": #{specialtyIds}," +
+                                    "\"name\": \"#{specialtyName}\"" +
                                     "}]" +
                                     "}"))
                             .check(status().is(204))

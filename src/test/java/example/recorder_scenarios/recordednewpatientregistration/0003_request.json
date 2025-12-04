@@ -1,0 +1,8 @@
+{
+  "name": "MiuRecord",
+  "birthDate": "2023-01-01",
+  "type": {
+    "id": 1,
+    "name": "cat"
+  }
+}

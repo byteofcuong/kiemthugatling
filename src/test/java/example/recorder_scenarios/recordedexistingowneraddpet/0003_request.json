@@ -1,0 +1,8 @@
+{
+  "name": "Parrot",
+  "birthDate": "2022-02-02",
+  "type": {
+    "id": 5,
+    "name": "bird"
+  }
+}
