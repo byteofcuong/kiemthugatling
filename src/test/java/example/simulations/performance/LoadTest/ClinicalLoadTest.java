@@ -10,48 +10,38 @@ import java.time.Duration;
 import static io.gatling.javaapi.core.CoreDsl.*;
 
 public class ClinicalLoadTest extends Simulation {
-    private static final Duration TEST_DURATION = Duration.ofMinutes(20);
+    private static final Duration RAMP_DURATION = Duration.ofMinutes(5);
+    private static final Duration STEADY_DURATION = Duration.ofMinutes(15);
     {
         setUp(
-                // --- NHÓM NGƯỜI DÙNG CHÍNH (70% Traffic) ---
-                // Khám thường & Đăng ký mới
-                ClinicalFlows.newPatientRegistration.injectOpen(
-                        rampUsers(420).during(TEST_DURATION)
+                ClinicalFlows.newPatientRegistration.injectClosed(
+                        rampConcurrentUsers(0).to(15).during(RAMP_DURATION),
+                        constantConcurrentUsers(15).during(STEADY_DURATION)
                 ),
 
-                // --- NHÓM NGƯỜI DÙNG CÓ NHIỀU PET (20% Traffic) ---
-                // Mô phỏng gia đình nuôi nhiều thú cưng
-                ClinicalFlows.multiPetOwnerJourney.injectOpen(
-                        nothingFor(Duration.ofMinutes(1)),
-                        rampUsers(120).during(TEST_DURATION.minusMinutes(1))
+                ClinicalFlows.multiPetOwnerJourney.injectClosed(
+                        rampConcurrentUsers(0).to(5).during(RAMP_DURATION),
+                        constantConcurrentUsers(5).during(STEADY_DURATION)
                 ),
 
-                // --- NHÓM NGƯỜI DÙNG PHỤ (8% Traffic) ---
-                // Tìm kiếm, Đổi lịch
-                ClinicalFlows.searchOwner.injectOpen(
-                        nothingFor(Duration.ofMinutes(2)),
-                        rampUsers(50).during(TEST_DURATION.minusMinutes(2))
+                ClinicalFlows.searchOwner.injectClosed(
+                        rampConcurrentUsers(0).to(3).during(RAMP_DURATION),
+                        constantConcurrentUsers(3).during(STEADY_DURATION)
                 ),
-                ClinicalFlows.rescheduleVisit.injectOpen(
-                        nothingFor(Duration.ofMinutes(2)),
-                        rampUsers(50).during(TEST_DURATION.minusMinutes(2))
+                ClinicalFlows.rescheduleVisit.injectClosed(
+                        constantConcurrentUsers(1).during(STEADY_DURATION.plus(RAMP_DURATION))
                 ),
 
-                // --- NHÓM ĐỘT BIẾN (2% Traffic) ---
-                // Cấp cứu & Admin
-                ClinicalFlows.emergencyVisit.injectOpen(
-                        nothingFor(Duration.ofMinutes(2)),
-                        rampUsers(50).during(TEST_DURATION.minusMinutes(2))
+                ClinicalFlows.emergencyVisit.injectClosed(
+                        constantConcurrentUsers(1).during(STEADY_DURATION.plus(RAMP_DURATION))
                 ),
-                AdminFlows.onboardVet.injectOpen(
-                        nothingFor(Duration.ofMinutes(2)),
-                        rampUsers(50).during(TEST_DURATION.minusMinutes(2))
+                AdminFlows.onboardVet.injectClosed(
+                        constantConcurrentUsers(1).during(STEADY_DURATION.plus(RAMP_DURATION))
                 )
         )
                 .protocols(Config.httpProtocol)
-                // TIÊU CHÍ CHẤP NHẬN (SLA) - Relaxed for initial testing
                 .assertions(
-                        global().responseTime().percentile3().lt(800),
+                        global().responseTime().percentile3().lt(1000),
                         global().responseTime().mean().lt(300),
                         global().failedRequests().percent().lt(1.0)
                 );

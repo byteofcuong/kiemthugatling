@@ -65,12 +65,12 @@ public class ClinicalFlows {
             .feed(Feeders.users)
             .exec(VetApi.getAllVets)
             .pause(1)
-            .exec(OwnerApi.createOwner)  // createOwner sẽ tự động lưu ownerId
+            .exec(OwnerApi.createOwner)
             .pause(1)
             .exec(OwnerApi.getOwnerById)
-            .exec(PetApi.createPetForOwner)  // createPetForOwner sẽ tự động lưu petId
+            .exec(PetApi.createPetForOwner)
             .pause(1)
-            .exec(VisitApi.createEmergencyVisit)  // Sử dụng ownerId và petId đã được lưu
+            .exec(VisitApi.createEmergencyVisit)
             .exec(VisitApi.getVisitById);
 
     /**
@@ -92,15 +92,12 @@ public class ClinicalFlows {
     public static ScenarioBuilder multiPetManagement = scenario("Multi-Pet Management")
             .feed(Feeders.users)
             .exec(OwnerApi.createOwner)
-            // Pet 1 (Dùng data từ CSV)
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet1Id", session.get("petId")))
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet2Id", session.get("petId")))
-            // Pet 3
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet3Id", session.get("petId")))
-            // Đặt lịch
             .exec(session -> session.set("petId", session.get("pet1Id")))
             .exec(VisitApi.createVisitForPet)
             .exec(session -> session.set("petId", session.get("pet2Id")))
@@ -113,10 +110,10 @@ public class ClinicalFlows {
      * QUY TRÌNH TOÀN DIỆN CỦA BỆNH NHÂN
      */
     public static ScenarioBuilder completeLifecycle = scenario("Complete Patient Lifecycle")
-            .pace(5)  // Đảm bảo mỗi user chờ ít nhất 5 giây giữa các iteration
+            .pace(5)
             .feed(Feeders.users)
             .exec(OwnerApi.createOwner)
-            .pause(1, 2)  // Chờ ngẫu nhiên 1-2 giây (giống người dùng thật)
+            .pause(1, 2)
             .exec(PetApi.createPetForOwner)
             .pause(1, 2)
             .exec(VisitApi.createVisitForPet)
@@ -137,9 +134,8 @@ public class ClinicalFlows {
      * TÌM KIẾM CHỦ SỞ HỮU THEO LAST NAME
      */
     public static ScenarioBuilder searchOwner = scenario("Read: Search Owner")
-            .feed(Feeders.users) // <--- NẠP DATA để lấy lastName
+            .feed(Feeders.users)
             .exec(OwnerApi.createOwner)
-            // Lưu lại lastName vừa tạo để tìm kiếm chính xác
             .exec(session -> session.set("searchName", session.getString("lastName")))
             .pause(1)
             .exec(OwnerApi.searchOwnerByLastName);
@@ -148,31 +144,21 @@ public class ClinicalFlows {
      * ĐĂNG KÍ VỚI DỮ LIỆU KHÔNG HỢP LỆ
      */
     public static ScenarioBuilder invalidRegistration = scenario("Negative: Invalid Registration")
-            // KHÔNG CẦN FEEDER vì dùng chuỗi string cứng để test lỗi
             .exec(OwnerApi.createOwnerInvalidData)
             .pause(1);
 
     /**
      * QUẢN LÝ CHỦ SỞ HỮU CÓ NHIỀU THÚ CƯNG
-     * Mô phỏng trường hợp thực tế: một gia đình nuôi nhiều thú cưng khác loại
      */
     public static ScenarioBuilder multiPetOwnerJourney = scenario("Multi-Pet Owner Journey")
             .feed(Feeders.users)
-            
-            // Phase 1: Tạo owner mới
             .exec(OwnerApi.createOwner)
             .pause(1, 2)
-            
-            // Phase 2: Xem các loại pet có sẵn
             .exec(PetApi.getAllPetTypes)
             .pause(1)
-            
-            // Phase 3: Đăng ký pet thứ nhất (sử dụng data từ CSV)
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet1Id", session.get("petId")))
             .pause(1)
-            
-            // Phase 4: Đăng ký pet thứ hai (override petName và typeId)
             .exec(session -> session
                     .set("petName", session.getString("petName") + "2")
                     .set("typeId", 1)
@@ -180,8 +166,6 @@ public class ClinicalFlows {
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet2Id", session.get("petId")))
             .pause(1)
-            
-            // Phase 5: Đăng ký pet thứ ba
             .exec(session -> session
                     .set("petName", session.getString("firstName") + "Bird")
                     .set("typeId", 5)
@@ -189,37 +173,23 @@ public class ClinicalFlows {
             .exec(PetApi.createPetForOwner)
             .exec(session -> session.set("pet3Id", session.get("petId")))
             .pause(2, 3)
-            
-            // Phase 6: Xem thông tin owner với tất cả pets (kiểm tra performance khi load nhiều pets)
             .exec(OwnerApi.getOwnerById)
             .pause(1, 2)
-            
-            // Phase 7: Tìm bác sĩ thú y
             .exec(VetApi.getAllVets)
             .pause(1)
-            
-            // Phase 8: Đặt lịch khám cho pet 1
             .exec(session -> session.set("petId", session.get("pet1Id")))
             .exec(VisitApi.createVisitForPet)
             .exec(session -> session.set("visit1Id", session.get("visitId")))
             .pause(1)
-            
-            // Phase 9: Đặt lịch khám cho pet 2
             .exec(session -> session.set("petId", session.get("pet2Id")))
             .exec(VisitApi.createVisitForPet)
             .exec(session -> session.set("visit2Id", session.get("visitId")))
             .pause(1)
-            
-            // Phase 10: Đặt lịch khám cho pet 3
             .exec(session -> session.set("petId", session.get("pet3Id")))
             .exec(VisitApi.createVisitForPet)
             .exec(session -> session.set("visit3Id", session.get("visitId")))
             .pause(2, 3)
-            
-            // Phase 11: Xem tất cả lịch hẹn (kiểm tra query performance)
             .exec(VisitApi.getAllVisits)
             .pause(1, 2)
-            
-            // Phase 12: Xem lại thông tin owner để xác nhận tất cả pets và visits
             .exec(OwnerApi.getOwnerById);
 }

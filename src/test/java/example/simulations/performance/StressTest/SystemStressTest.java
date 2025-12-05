@@ -10,9 +10,9 @@ public class SystemStressTest extends Simulation {
         setUp(
                 ClinicalFlows.completeLifecycle.injectOpen(
                         incrementUsersPerSec(5)
-                                .times(10)
-                                .eachLevelLasting(60)
-                                .startingFrom(5)
+                                .times(20)
+                                .eachLevelLasting(45)
+                                .startingFrom(30)
                 )
         )
                 .protocols(Config.httpProtocol)
